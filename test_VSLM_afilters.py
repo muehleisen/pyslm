@@ -25,7 +25,7 @@ Pa = 2*np.pi*np.array([fa4, fa4, fa3, fa2, fa1, fa1])
 # [Ba, Aa] = sg.zpk2tf(Z, P, K)
 
 
-# C weighting filter has poles at 20.6 and 12194 Hz
+# C weighting filter has poles at 20.6 and 12194 Hzbbbbb
 C1000 = 0.0619;
 Kc = (2*np.pi*fa4)**2 * (10**(C1000/20))
 Zc = [0, 0]
@@ -46,25 +46,28 @@ ftol= [10, 12.5, 16, 20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315,
         6300, 8000, 10000, 12500, 16000, 20000 ];
 up1 = np.array([ 3, .25, 2, 2, 2, 1.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 0.7, 1, 1, 1, 1, 1, 1, 1.5, 1.5, 1.5, 2, 2, 2.5, 3 ]);
-low1 = -np.array([ np.inf, np.inf, 4, 2, 1.5, 1.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+low1 = np.array([ np.inf, np.inf, 4, 2, 1.5, 1.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 0.7, 1, 1, 1, 1, 1, 1, 1.5, 2, 2.5, 3, 5, 8, np.inf ]);
+up0  = np.array([2, 2, 2, 2, 1.5, 1, 1, 1, 1, 1, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7,
+        0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 1, 1, 1, 2, 2, 2, 2])
+low0 = np.array([5, 3, 3, 2, 1.5, 1, 1, 1, 1, 1, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7,
+        0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 1, 1.5, 2, 3, 3, 3, 3])
 
 
 # FS_list = [4]
 for fs in FS_list:
-    f = np.logspace(1, np.log10(fs/2), 512)
+    f = np.logspace(1, np.log10(30000), 1024)
     wn = f * 2 * np.pi/fs
     [ba, aa] = vf.awt_design(fs)
-    [bc, ac] = vf.cwt_design(fs)
-    # compute the frequency response of the actual a weighted filter
+    [bc, ac] = vf.awt_design(fs)
+    # compute the frequency response of the analog weighting filter
     [wa, ha] = sg.freqs_zpk(Za, Pa, Ka, wn*fs )
     [wc, hc] = sg.freqs_zpk(Zc, Pc, Kc, wn*fs )
-
 
     [wza, hza] = sg.freqz(ba, aa, wn)
     [wzc, hzc] = sg.freqz(bc, ac, wn)
 
-    print(bc)
+    # (bc)
 # end for fs in FS_list
 
 # print(ha)
@@ -74,26 +77,23 @@ for fs in FS_list:
     hzcdb = 20*np.log10(np.abs(hzc))
 
     diffa = hzadb - hadb
-    plt.subplot(2,2,1)
-    plt.semilogx(f, hzadb, f, hadb)
-    plt.axis([20,20000,-60,10])
-
-
-    plt.subplot(2,2,3)
-    plt.semilogx(f, diffa, ftol, up1, 'k:', ftol, low1, 'k:')
-    plt.axis([20,20000,-5,5])
-
-
     diffc = hzcdb - hcdb
-    plt.subplot(2,2,2)
-    plt.semilogx(f, hzcdb, f, hcdb)
-    plt.axis([20,20000,-60,10])
-    plt.title('C weighting Filter for Fs = {}'.format(fs))
 
+    plt.subplot(2,1,1)
+    plt.semilogx(f, hzadb, f, hadb)
+  #  plt.semilogx(f, hzcdb, f, hcdb)
 
-    plt.subplot(2,2,4)
-    plt.semilogx(f, diffc, ftol, up1, 'k:', ftol, low1, 'k:')
-    plt.axis([20,20000,-5,5])
+    plt.axis([10,30000,-70,10])
+    plt.title(' A-weighting Filter for Fs = {}'.format(fs))
+    # plt.title(' C-weighting Filter for Fs = {}'.format(fs))
+
+    plt.subplot(2,1,2)
+
+    plt.semilogx(f, diffa, ftol, up0, 'r--', ftol, -low0, 'r--')
+
+    # plt.semilogx(f, diffc, ftol, up0, 'r--', ftol, -low0, 'r--')
+
+    plt.axis([10,30000,-5,5])
 
 
 
