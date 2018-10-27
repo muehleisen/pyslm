@@ -27,7 +27,7 @@ function H=minphasen(Magn,Wspec,LinN,Wout);
 %
 %	C. Balazs Bank, 2000-2010.
 
-Magn=abs(Magn(:))'; %making it row vector
+Magn=abs(Magn(:))'; %make sure it is a magnitude and a row vector
 
 if nargin==1, % data is in linear frequency scale
    LinMagn=Magn;
@@ -67,7 +67,7 @@ H=Magn.*exp(j*Phase);
 
 [Nr,Nc] = size(Magn);
 if Nc>Nr  % looking if the input magnitude was a column vector
-    H=H.'; %if so, make the output a column vector
+    H=H(:); %if so, make the output a column vector
 end
 
 
