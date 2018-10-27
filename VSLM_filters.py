@@ -1,12 +1,12 @@
 # VSLM_filters.py
-# This file returns 5th order IIR filter coefficients for A and C weighted filters for
-# a given sampling frequency of 22, 44, 48, or 96 kHz.
+# This file returns 5th order IIR filter coefficients for A and C weighted
+# filters for a given sampling frequency of 22, 44, 48, or 96 kHz.
 #
 #
 # The filter coefficients created by generating a freq response curve in MATLAB
 # The freq response curve is generated using the ANSI S1.42 and MATLAB freqs
-# The filter coefficients were found by inverting freq response curve using MATLAB invfreqz
-# This is far accurate than using the bilinear transform
+# The filter coefficients were found by inverting freq response curve using
+# MATLAB invfreqz. This is more accurate than using the bilinear transform
 # b coefficients are the numerators, a coefficients are the denominators
 
 #
